@@ -1,0 +1,19 @@
+pipeline{
+    agent {
+        label{
+            label "built-in"
+            customworkspace "/mnt/projects"
+        }
+    }
+}
+tools{
+    docker "docker"    
+}
+stages{
+    stage("httpd"){
+        steps{
+            sh "sudo docker run -itdp 80:80 --name httpd httpd"
+            sh "sudo cp /mnt/projects/index.html httpd:/usr/local/apache2/htdocs"
+        }
+    }
+}
