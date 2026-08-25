@@ -6,14 +6,15 @@ pipeline{
         }
     }
 }
-tools{
-    docker "docker"    
-}
+
 stages{
     stage("httpd"){
-        steps{
+        steps{  
+            sh "sudo docker stop httpd"  
+            sh "sudo docker rm httpd"    
+            sh "sudo docker system prune -a -f"
             sh "sudo docker run -itdp 80:80 --name httpd httpd"
-            sh "sudo cp /mnt/projects/index.html httpd:/usr/local/apache2/htdocs"
+            sh "sudo docker cp /mnt/projects/index.html httpd:/usr/local/apache2/htdocs"
         }
     }
 }
