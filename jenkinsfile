@@ -1,20 +1,24 @@
-pipeline{
-    agent {
-        label{
-            label "built-in"
-            customworkspace "/mnt/projects"
-        }
-    }
-}
+pipeline {
+    agent any
 
-stages{
-    stage("httpd"){
-        steps{  
-            sh "sudo docker stop httpd"  
-            sh "sudo docker rm httpd"    
-            sh "sudo docker system prune -a -f"
-            sh "sudo docker run -itdp 80:80 --name httpd httpd"
-            sh "sudo docker cp /mnt/projects/index.html httpd:/usr/local/apache2/htdocs"
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t assign-1-docker .'
+            }
+        }
+
+        stage('Docker Run') {
+            steps {
+                sh 'docker run -d --name assign-1-container -p 8080:80 assign-1-docker'
+            }
         }
     }
 }
